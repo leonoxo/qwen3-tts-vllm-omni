@@ -1,94 +1,195 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" src="https://raw.githubusercontent.com/vllm-project/vllm-omni/refs/heads/main/docs/source/logos/vllm-omni-logo.png">
-    <img alt="vllm-omni" src="https://raw.githubusercontent.com/vllm-project/vllm-omni/refs/heads/main/docs/source/logos/vllm-omni-logo.png" width=55%>
-  </picture>
-</p>
-<h3 align="center">
-Easy, fast, and cheap omni-modality model serving for everyone
-</h3>
+# Qwen3-TTS vLLM-Omni Docker Deployment
 
-<p align="center">
-| <a href="https://vllm-omni.readthedocs.io/en/latest/"><b>Documentation</b></a> | <a href="https://discuss.vllm.ai"><b>User Forum</b></a> | <a href="https://slack.vllm.ai"><b>Developer Slack</b></a> | <a href="docs/assets/WeChat.jpg"><b>WeChat</b></a> | <a href="https://arxiv.org/abs/2602.02204"><b>Paper</b></a> | <a href="https://docs.google.com/presentation/d/1qv4qMW1rKAqDREMXiUDLIgqqHQe7TDPj/edit?usp=sharing&ouid=110473603432222024453&rtpof=true&sd=true"><b>Slides</b></a> |
-</p>
+基於 vLLM-Omni 的 Qwen3-TTS Docker 部署方案，支持 OpenAI API 格式和串流輸出。
 
+## 功能特點
 
----
+- OpenAI API 兼容的 TTS 端點
+- 真正的串流輸出（~7ms 首字節延遲）
+- Docker 一鍵部署
+- 支持 Qwen3-TTS-1.7B 模型
+- 模型名稱：Qwen/Qwen3-TTS-1.7B
 
-*Latest News* 🔥
+## 系統需求
 
-- [2026/02] We released [0.14.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.14.0) - This is the first **stable release** of vLLM-Omni that expands Omni’s diffusion / image-video generation and audio / TTS stack, improves distributed execution and memory efficiency, and broadens platform/backend coverage (GPU/ROCm/NPU/XPU). It also brings meaningful upgrades to serving APIs, profiling & benchmarking, and overall stability. Please check our latest [paper](https://arxiv.org/abs/2602.02204) for architecture design and performance results.
-- [2026/01] We released [0.12.0rc1](https://github.com/vllm-project/vllm-omni/releases/tag/v0.12.0rc1) - a major RC milestone focused on maturing the diffusion stack, strengthening OpenAI-compatible serving, expanding omni-model coverage, and improving stability across platforms (GPU/NPU/ROCm).
-- [2025/11] vLLM community officially released [vllm-project/vllm-omni](https://github.com/vllm-project/vllm-omni) in order to support omni-modality models serving.
+- NVIDIA GPU（建議 16GB+ VRAM）
+- Docker 20.10+
+- nvidia-container-toolkit
+- CUDA 12.0+
+- 磁盤空間：25GB+（映像 21.2GB + 模型 4.3GB）
 
----
+## 快速開始
 
-## About
+### 方式一：使用預構建映像（推薦）
 
-[vLLM](https://github.com/vllm-project/vllm) was originally designed to support large language models for text-based autoregressive generation tasks. vLLM-Omni is a framework that extends its support for omni-modality model inference and serving:
+```bash
+# 1. 克隆倉庫
+git clone https://github.com/leonoxo/qwen3-tts-vllm-omni.git
+cd qwen3-tts-vllm-omni
 
-- **Omni-modality**: Text, image, video, and audio data processing
-- **Non-autoregressive Architectures**: extend the AR support of vLLM to Diffusion Transformers (DiT) and other parallel generation models
-- **Heterogeneous outputs**: from traditional text generation to multimodal outputs
+# 2. 下載模型權重（約 4.3GB）
+pip install huggingface_hub
+huggingface-cli download Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice \
+  --local-dir ./model/Qwen3-TTS-12Hz-1.7B-CustomVoice
 
-<p align="center">
-  <picture>
-    <img alt="vllm-omni" src="https://raw.githubusercontent.com/vllm-project/vllm-omni/refs/heads/main/docs/source/architecture/omni-modality-model-architecture.png" width=55%>
-  </picture>
-</p>
+# 3. 拉取預構建映像
+docker pull leonoxo/qwen3-tts:vllm-omni
 
-vLLM-Omni is fast with:
+# 4. 啟動服務
+docker compose up -d
 
-- State-of-the-art AR support by leveraging efficient KV cache management from vLLM
-- Pipelined stage execution overlapping for high throughput performance
-- Fully disaggregation based on OmniConnector and dynamic resource allocation across stages
-
-vLLM-Omni is flexible and easy to use with:
-
-- Heterogeneous pipeline abstraction to manage complex model workflows
-- Seamless integration with popular Hugging Face models
-- Tensor, pipeline, data and expert parallelism support for distributed inference
-- Streaming outputs
-- OpenAI-compatible API server
-
-vLLM-Omni seamlessly supports most popular open-source models on HuggingFace, including:
-
-- Omni-modality models (e.g. Qwen-Omni)
-- Multi-modality generation models (e.g. Qwen-Image)
-
-## Getting Started
-
-Visit our [documentation](https://vllm-omni.readthedocs.io/en/latest/) to learn more.
-
-- [Installation](https://vllm-omni.readthedocs.io/en/latest/getting_started/installation/)
-- [Quickstart](https://vllm-omni.readthedocs.io/en/latest/getting_started/quickstart/)
-- [List of Supported Models](https://vllm-omni.readthedocs.io/en/latest/models/supported_models/)
-
-## Contributing
-
-We welcome and value any contributions and collaborations.
-Please check out [Contributing to vLLM-Omni](https://vllm-omni.readthedocs.io/en/latest/contributing/) for how to get involved.
-
-## Citation
-
-If you use vLLM-Omni for your research, please cite our [paper](https://arxiv.org/abs/2602.02204):
-
-```bibtex
-@article{yin2026vllmomni,
-  title={vLLM-Omni: Fully Disaggregated Serving for Any-to-Any Multimodal Models},
-  author={Peiqi Yin, Jiangyun Zhu, Han Gao, Chenguang Zheng, Yongxiang Huang, Taichang Zhou, Ruirui Yang, Weizhi Liu, Weiqing Chen, Canlin Guo, Didan Deng, Zifeng Mo, Cong Wang, James Cheng, Roger Wang, Hongsheng Liu},
-  journal={arXiv preprint arXiv:2602.02204},
-  year={2026}
-}
+# 5. 查看日誌
+docker logs -f qwen3-tts
 ```
 
-## Join the Community
-Feel free to ask questions, provide feedbacks and discuss with fellow users of vLLM-Omni in `#sig-omni` slack channel at [slack.vllm.ai](https://slack.vllm.ai) or vLLM user forum at [discuss.vllm.ai](https://discuss.vllm.ai).
+### 方式二：自行構建映像
 
-## Star History
+```bash
+# 1. 克隆倉庫
+git clone https://github.com/leonoxo/qwen3-tts-vllm-omni.git
+cd qwen3-tts-vllm-omni
 
-[![Star History Chart](https://api.star-history.com/svg?repos=vllm-project/vllm-omni&type=date&legend=top-left)](https://www.star-history.com/#vllm-project/vllm-omni&type=date&legend=top-left)
+# 2. 下載模型權重
+huggingface-cli download Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice \
+  --local-dir ./model/Qwen3-TTS-12Hz-1.7B-CustomVoice
+
+# 3. 構建映像（約 10-15 分鐘）
+docker compose build
+
+# 4. 啟動服務
+docker compose up -d
+```
+
+## API 使用說明
+
+### 基本請求（非串流）
+
+```bash
+curl http://localhost:8092/v1/audio/speech \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "Qwen/Qwen3-TTS-1.7B",
+    "input": "你好，這是一個測試。",
+    "voice": "default",
+    "response_format": "wav"
+  }' --output test.wav
+```
+
+### 串流請求（Python）
+
+```python
+import httpx
+import soundfile as sf
+import numpy as np
+
+# 串流生成語音
+with httpx.stream(
+    "POST",
+    "http://localhost:8092/v1/audio/speech",
+    json={
+        "model": "Qwen/Qwen3-TTS-1.7B",
+        "input": "你好，這是一個串流測試。",
+        "voice": "default",
+        "response_format": "pcm",
+        "stream": True
+    },
+    timeout=60.0
+) as response:
+    audio_data = b""
+    for chunk in response.iter_bytes():
+        audio_data += chunk
+        print(f"Received {len(audio_data)} bytes")
+
+    # 轉換 PCM 為 WAV（採樣率 24000）
+    audio_array = np.frombuffer(audio_data, dtype=np.int16)
+    sf.write("output.wav", audio_array, 24000)
+```
+
+### OpenAI SDK 示例
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:8092/v1",
+    api_key="not-needed"
+)
+
+response = client.audio.speech.create(
+    model="Qwen/Qwen3-TTS-1.7B",
+    input="你好，這是使用 OpenAI SDK 的測試。",
+    voice="default",
+    response_format="wav"
+)
+
+response.stream_to_file("output.wav")
+```
+
+## API 參數
+
+| 參數 | 類型 | 必填 | 說明 | 默認值 |
+|------|------|------|------|--------|
+| model | string | 是 | 模型名稱 | Qwen/Qwen3-TTS-1.7B |
+| input | string | 是 | 要合成的文字 | - |
+| voice | string | 否 | 聲音風格 | default |
+| response_format | string | 否 | 輸出格式 (wav/pcm/mp3) | wav |
+| stream | boolean | 否 | 是否串流輸出 | false |
+
+## 配置文件
+
+### docker-compose.yml
+
+```yaml
+services:
+  qwen3-tts:
+    image: leonoxo/qwen3-tts:vllm-omni
+    container_name: qwen3-tts
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+    ports:
+      - 8092:8092
+    volumes:
+      - ./model:/app/model:ro
+    ipc: host
+    restart: unless-stopped
+```
+
+## 故障排除
+
+### 容器無法啟動
+
+```bash
+# 檢查 GPU
+nvidia-smi
+
+# 檢查 Docker GPU 支持
+docker run --rm --gpus all nvidia/cuda:12.0-base nvidia-smi
+```
+
+### 串流報錯
+
+串流模式必須使用 `response_format: "pcm"`
+
+### 查看日誌
+
+```bash
+docker logs -f qwen3-tts
+```
+
+## 性能指標
+
+- 首字節延遲：~7ms
+- 映像大小：21.2GB
+- 模型大小：4.3GB
+- 最小 GPU 顯存：~5GB
+
+## 相關鏈接
+
+- [Qwen3-TTS 模型](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice)
+- [Docker Hub](https://hub.docker.com/r/leonoxo/qwen3-tts)
 
 ## License
 
-Apache License 2.0, as found in the [LICENSE](./LICENSE) file.
+Apache 2.0
