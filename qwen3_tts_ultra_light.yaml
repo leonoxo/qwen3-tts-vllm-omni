@@ -25,12 +25,12 @@ stage_args:
     output_connectors:
       to_stage_1: connector_of_shared_memory
     default_sampling_params:
-      temperature: 0.5
-      top_k: 20
+      temperature: 0.9
+      top_k: 50
       max_tokens: 4096
       seed: 42
       detokenize: false
-      repetition_penalty: 1.0
+      repetition_penalty: 1.05
       stop_token_ids: [2150]
 
   - stage_id: 1
