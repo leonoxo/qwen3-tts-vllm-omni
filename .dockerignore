@@ -1,0 +1,47 @@
+# Python virtual environment (11GB!)
+venv/
+.venv/
+env/
+
+# Git
+.git/
+.gitignore
+
+# Model weights (should be mounted as volume)
+model/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Tests
+tests/
+test_*.py
+*_test.py
+
+# Examples
+examples/
+
+# Build artifacts
+*.egg-info/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

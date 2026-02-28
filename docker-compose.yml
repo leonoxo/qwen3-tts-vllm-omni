@@ -1,0 +1,23 @@
+services:
+  qwen3-tts:
+    build: .
+    image: qwen3-tts:vllm-omni
+    container_name: qwen3-tts
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+      - HF_HOME=/app/model
+      - TRANSFORMERS_CACHE=/app/model
+    ports:
+      - 8092:8092
+    volumes:
+      - ./model:/app/model:ro
+      - ./qwen3_tts_ultra_light.yaml:/app/config.yaml:ro
+    ipc: host
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+        max-file: 3
