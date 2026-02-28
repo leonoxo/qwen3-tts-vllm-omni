@@ -70,7 +70,7 @@ curl http://localhost:8092/v1/audio/speech \
   -d '{
     "model": "Qwen/Qwen3-TTS-1.7B",
     "input": "你好，這是一個測試。",
-    "voice": "default",
+    "voice": "serena",
     "response_format": "wav"
   }' --output test.wav
 ```
@@ -89,7 +89,7 @@ with httpx.stream(
     json={
         "model": "Qwen/Qwen3-TTS-1.7B",
         "input": "你好，這是一個串流測試。",
-        "voice": "default",
+        "voice": "serena",
         "response_format": "pcm",
         "stream": True
     },
@@ -118,7 +118,7 @@ client = OpenAI(
 response = client.audio.speech.create(
     model="Qwen/Qwen3-TTS-1.7B",
     input="你好，這是使用 OpenAI SDK 的測試。",
-    voice="default",
+    voice="serena",
     response_format="wav"
 )
 
@@ -131,9 +131,25 @@ response.stream_to_file("output.wav")
 |------|------|------|------|--------|
 | model | string | 是 | 模型名稱 | Qwen/Qwen3-TTS-1.7B |
 | input | string | 是 | 要合成的文字 | - |
-| voice | string | 否 | 聲音風格 | default |
+| voice | string | 是 | 聲音風格（見下表） | - |
 | response_format | string | 否 | 輸出格式 (wav/pcm/mp3) | wav |
 | stream | boolean | 否 | 是否串流輸出 | false |
+
+## 支持的聲音 (Voice)
+
+| 聲音名稱 | 說明 |
+|----------|------|
+| aiden | 男聲 |
+| dylan | 男聲 |
+| eric | 男聲 |
+| ono_anna | 女聲 |
+| ryan | 男聲 |
+| serena | 女聲（推薦） |
+| sohee | 女聲 |
+| uncle_fu | 男聲 |
+| vivian | 女聲 |
+
+> **注意**：不支持 `default`，必須指定上述聲音之一。
 
 ## 配置文件
 
@@ -167,6 +183,10 @@ nvidia-smi
 # 檢查 Docker GPU 支持
 docker run --rm --gpus all nvidia/cuda:12.0-base nvidia-smi
 ```
+
+### 聲音參數錯誤
+
+如果出現 `Invalid speaker 'default'` 錯誤，請使用支持的聲音名稱（見上方聲音列表）。
 
 ### 串流報錯
 
