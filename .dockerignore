@@ -45,3 +45,19 @@ htmlcov/
 *.tmp
 *.temp
 .cache/
+
+# Unnecessary directories (already deleted from project)
+apps/
+benchmarks/
+tools/
+docker/
+scripts/
+.github/
+
+# Unnecessary config files
+mkdocs.yml
+.readthedocs.yml
+.pre-commit-config.yaml
+collect_env.py
+.gitattributes
+CONTRIBUTING.md

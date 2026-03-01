@@ -1,7 +1,6 @@
 services:
   qwen3-tts:
-    build: .
-    image: qwen3-tts:vllm-omni
+    image: leonoxo/qwen3-tts:vllm-omni
     container_name: qwen3-tts
     runtime: nvidia
     environment:
